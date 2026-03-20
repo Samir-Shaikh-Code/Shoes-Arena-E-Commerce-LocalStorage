@@ -1,0 +1,62 @@
+import { useContext, useState } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import "./Login.css";
+
+function Login() {
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    if (!email || !password) {
+      alert("Please fill all fields");
+      return;
+    }
+
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+
+    const existingUser = users.find(
+      (u) => u.email === email && u.password === password,
+    );
+
+    if (existingUser) {
+      login(existingUser);
+      alert("Logged in successfully");
+      navigate("/");
+    } else {
+      alert("Invalid credentials");
+    }
+  };
+
+  return (
+    <>
+      <div className="login-form">
+        <div className="form-card">
+          <h1>Login</h1>
+          <form onSubmit={handleLogin}>
+            <input
+              type="email"
+              placeholder="Email"
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <br />
+            <input
+              type="password"
+              placeholder="Password"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <br />
+            <button type="submit">Login</button>
+          </form>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export default Login;
